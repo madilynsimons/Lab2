@@ -57,7 +57,7 @@ int main()
 
 	char clear_file[] = "message_file.txt";
 	char* clear = clear_file;
-	encrypt(clear, clear, clear);
+	encrypt(clear, clear, "output_file.txt");
 
 	return 0;
 }
@@ -95,7 +95,24 @@ char* make_rand_key(int length, char* key)
 
 void encrypt(char* clear_file, char* key_file, char* cipher_file)
 {
-	char* input = read_file(0, clear_file);
+
+	clear_file = read_file(0, clear_file);
+
+	int length = 0;
+	while(clear_file[length] != '\0') length++;
+
+	key_file = make_rand_key(length, key_file);
+
+	char *encrypted = (char*) malloc(length+1);
+
+	int x;
+	for(x = 0; x < length; x++)
+	{
+		encrypted[x] = clear_file[x] ^ key_file[x];
+	}
+
+	//  content is a char pointer
+	write_file(length, cipher_file, encrypted);
 
 }
 
