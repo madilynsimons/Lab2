@@ -95,6 +95,10 @@ char* make_rand_key(int length, char* key)
 
 void encrypt(char* clear_file, char* key_file, char* cipher_file)
 {
+	// TODO:  deal with memory leaks 
+	// read_file should be assigned to a new pointer
+	// key_file should be declared else where
+	// good start though
 
 	clear_file = read_file(0, clear_file);
 
@@ -111,9 +115,17 @@ void encrypt(char* clear_file, char* key_file, char* cipher_file)
 		encrypted[x] = clear_file[x] ^ key_file[x];
 	}
 
-	//  content is a char pointer
 	write_file(length, cipher_file, encrypted);
 
+	free(encrypted);
+	encrypted = NULL;
+}
+
+void decrypt(char* key_file, char* cipher_file, char* clear_file)
+{
+	/**
+	 *  TODO
+	 */
 }
 
 char* read_file(int len, char *file_name)
