@@ -15,17 +15,19 @@ void decrypt(char* key_file, char* cipher_file, char* clear_file);
 char* read_file(int len, char *file_name);
 void write_file(int len, char *file_name, char *output);
 
+int length;
 
 int main()
 {
-	
+	length = 0;
+
 	char selection = '0';
 
 	while(selection < '1' || selection > '3')
 	{
 		printf("Encrypt a file:\t1\n");
 		printf("Decrypt a file:\t2\n");
-		printf("Exit:\t3\n");
+		printf("Exit program:\t3\n");
 		printf("Enter a choice: ");
 
 		selection = getchar();
@@ -38,15 +40,14 @@ int main()
 	switch(selection)
 	{
 		case '1':
-			printf("You've selected 1 to encrypt a file\n");
+			printf("Encrypting...\n");
 			encrypt(clear_file, key_file, cipher_file);
 			break;
 		case '2':
-			printf("You've selected 2 to decrypt a file\n");
+			printf("Decrypting...\n");
 			decrypt(key_file, cipher_file, clear_file);
 			break;
 		case '3':
-			printf("You've selected 3 to exit\n");
 			printf("Good-bye!\n");
 			break;
 	}
@@ -56,9 +57,6 @@ int main()
 
 char* make_rand_key(int length, char* key)
 {
-	/**
-	 *  TODO:  write errors
-	 */
 	if(length > 0)
 	{
 
@@ -86,7 +84,7 @@ char* make_rand_key(int length, char* key)
 	}
 	else
 	{
-		printf("ERROR:  key not generated");
+		printf("ERROR: key not generated");
 		return NULL;
 	}
 
@@ -94,7 +92,6 @@ char* make_rand_key(int length, char* key)
 
 void encrypt(char* clear_file, char* key_file, char* cipher_file)
 {
-	//** TODO:  malloc **/
 	//  get clear file text
 	char *clear_text = read_file(0, clear_file);
 
@@ -102,16 +99,7 @@ void encrypt(char* clear_file, char* key_file, char* cipher_file)
 	int length = 0;
 	while(clear_text[length] != '\0') length++;
 
-	// make a random key
-	char *key = (char*) malloc(length+1);
-
-	if(key == NULL)
-	{
-		printf("ERROR: Memory not allocated\n");
-		exit(2);
-	}
-
-	key = make_rand_key(length, key);
+	char* key = make_rand_key(length, key);
 
 	//  declare encrypted text
 	char *encrypted = (char*) malloc(length+1);
@@ -139,15 +127,12 @@ void encrypt(char* clear_file, char* key_file, char* cipher_file)
 	encrypted = NULL;
 	key = NULL;
 
-	printf("\n%s encrypted\n", clear_file);
+	printf("%s encrypted\n", clear_file);
 }
 
 void decrypt(char* key_file, char* cipher_file, char* clear_file)
 {
 	char *key = read_file(0, key_file);
-
-	int length = 0;
-	while(key[length] != '\0') length++;
 
 	char *encrypted = (char*) malloc(length+1);
 	encrypted = read_file(length, cipher_file);
@@ -179,7 +164,7 @@ void decrypt(char* key_file, char* cipher_file, char* clear_file)
 	encrypted = NULL;
 	decypted = NULL;
 
-	printf("\n%s decrypted\n", cipher_file);
+	printf("%s decrypted\n", cipher_file);
 }
 
 char* read_file(int len, char *file_name)
@@ -196,9 +181,8 @@ char* read_file(int len, char *file_name)
 	{
 		while(getc(fp) != EOF)
 			len++;
-		printf("len = %d\n", len);
-		rewind(fp);
 	}
+	length = len;
 
 	char *input = (char*) malloc(len+1);
 
@@ -247,6 +231,8 @@ void write_file(int len, char *file_name, char *output)
 			putc(output[j], fp);
 		}
 	}
+
+	length = len;
 
 	fclose(fp);
 
