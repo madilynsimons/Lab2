@@ -63,6 +63,11 @@ char* make_rand_key(int length, char* key)
 	{
 
 		char* key = (char*) malloc(length+1);
+		if(key == NULL)
+		{
+			printf("ERROR: Memory not allocated\n");
+			exit(2);
+		}
 
 		int range = 78;
 		int max = 48;
@@ -81,7 +86,7 @@ char* make_rand_key(int length, char* key)
 	}
 	else
 	{
-		printf("ERROR: make_rand_key invalid input");
+		printf("ERROR:  key not generated");
 		return NULL;
 	}
 
@@ -89,11 +94,7 @@ char* make_rand_key(int length, char* key)
 
 void encrypt(char* clear_file, char* key_file, char* cipher_file)
 {
-	// TODO:  deal with memory leaks 
-	// read_file should be assigned to a new pointer
-	// key_file should be declared else where
-	// good start though
-
+	//** TODO:  malloc **/
 	//  get clear file text
 	char *clear_text = read_file(0, clear_file);
 
@@ -103,10 +104,23 @@ void encrypt(char* clear_file, char* key_file, char* cipher_file)
 
 	// make a random key
 	char *key = (char*) malloc(length+1);
+
+	if(key == NULL)
+	{
+		printf("ERROR: Memory not allocated\n");
+		exit(2);
+	}
+
 	key = make_rand_key(length, key);
 
 	//  declare encrypted text
 	char *encrypted = (char*) malloc(length+1);
+
+	if(encrypted == NULL)
+	{
+		printf("ERROR: Memory not allocated\n");
+		exit(2);
+	}
 
 	//  encrypt text
 	int x;
@@ -124,6 +138,8 @@ void encrypt(char* clear_file, char* key_file, char* cipher_file)
 	free(key);
 	encrypted = NULL;
 	key = NULL;
+
+	printf("\n%s encrypted\n", clear_file);
 }
 
 void decrypt(char* key_file, char* cipher_file, char* clear_file)
@@ -136,7 +152,19 @@ void decrypt(char* key_file, char* cipher_file, char* clear_file)
 	char *encrypted = (char*) malloc(length+1);
 	encrypted = read_file(length, cipher_file);
 
+	if(encrypted == NULL)
+	{
+		printf("ERROR: Memory not allocated\n");
+		exit(2);
+	}
+
 	char *decypted = (char*) malloc(length+1);
+
+	if(decypted == NULL)
+	{
+		printf("ERROR: Memory not allocated\n");
+		exit(2);
+	}
 
 	int x;
 	for(x = 0; x < length; x++)
@@ -150,6 +178,8 @@ void decrypt(char* key_file, char* cipher_file, char* clear_file)
 	free(decypted);
 	encrypted = NULL;
 	decypted = NULL;
+
+	printf("\n%s decrypted\n", cipher_file);
 }
 
 char* read_file(int len, char *file_name)
